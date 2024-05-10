@@ -1,9 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace PxlSq.Game
 {
     public class CardMatch
     {
+        public UnityAction<bool> OnCardMatched;
+
         private Card _card1;
         private Card _card2;
 
@@ -27,8 +30,6 @@ namespace PxlSq.Game
 
         private void OnAnimationFinished(Card card)
         {
-            Debug.Log($"{_card1.IsShown} | {_card2.IsShown} | {_isMatched}");
-
             if (!_card1.IsShown || !_card2.IsShown)
             {
                 return;
@@ -39,6 +40,8 @@ namespace PxlSq.Game
 
             _card1.OnAnimationFinished -= OnAnimationFinished;
             _card2.OnAnimationFinished -= OnAnimationFinished;
+
+            OnCardMatched?.Invoke(_isMatched);
 
             if (!_isMatched)
             {

@@ -50,8 +50,12 @@ namespace PxlSq.Game
                     idx++;
                 }
             }
+        }
 
-            StartCoroutine(RemoveAllLayoutGroupsRoutine());
+        private IEnumerator Start()
+        {
+            yield return null;
+            RemoveAllLayoutGroupsRoutine();
         }
 
         /// <summary>
@@ -69,10 +73,8 @@ namespace PxlSq.Game
         /// And prevents the canvas runtime layout calculation.
         /// </summary>
         /// <returns></returns>
-        private IEnumerator RemoveAllLayoutGroupsRoutine()
+        private void RemoveAllLayoutGroupsRoutine()
         {
-            yield return null;
-
             var layoutGroups = transform.GetComponentsInChildren<LayoutGroup>();
             
             foreach (var layoutGroup in layoutGroups)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace PxlSq.Game
 {
@@ -10,6 +11,8 @@ namespace PxlSq.Game
         [SerializeField] private BoardGameData _gameData;
         [SerializeField] private BoardGameView _gameView;
 
+        public event UnityAction<bool> OnCardMatched = null;
+
         private Card _selectedCard = null;
         private readonly System.Random _rng = new System.Random();
 
@@ -18,7 +21,12 @@ namespace PxlSq.Game
             _gameData = gameData;
             _gameView = gameView;
 
-            GenerateCardIds(_gameData.boardSize);
+            // Generate new card ids if we don't have anything saved.
+            if (gameData.cardIds == null || gameData.cardIds.Length == 0)
+            {
+                GenerateCardIds(_gameData.boardSize);
+            }
+
             _gameView.PopulateGameBoard(_gameData);
 
             _gameView.OnCardSelected += HandleCardSelected;
@@ -45,7 +53,7 @@ namespace PxlSq.Game
             }
 
             ShuffleCards(_gameData.cardIds);
-            PrintCardIds(_gameData.cardIds);
+            // PrintCardIds(_gameData.cardIds);
         }
 
         /// <summary>
@@ -79,9 +87,13 @@ namespace PxlSq.Game
 
             // Card match is already determined before animation finishes.
             var isMatched = IsCardMatched(_selectedCard, card);
-            _ = new CardMatch(_selectedCard, card, isMatched);
+            _ = new CardMatch(_selectedCard, card, isMatched)
+            {
+                OnCardMatched = OnCardMatched
+            };
 
             _selectedCard = null;
+            
         }
 
         /// <summary>
