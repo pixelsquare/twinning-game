@@ -14,7 +14,6 @@ namespace PxlSq.Game
         public static event UnityAction<bool> OnCardMatched = null;
 
         private Card _selectedCard = null;
-        private CardMatch _cardMatch = new(OnCardMatched);
         private readonly System.Random _rng = new System.Random();
 
         public BoardController(BoardGameData gameData, BoardGameView gameView)
@@ -93,7 +92,8 @@ namespace PxlSq.Game
 
             // Card match is already determined before animation finishes.
             var isMatched = IsCardMatched(_selectedCard, card);
-            _cardMatch.Setup(_selectedCard, card, isMatched);
+            var cardMatch = new CardMatch(OnCardMatched);
+            cardMatch.Setup(_selectedCard, card, isMatched);
 
             if (isMatched)
             {

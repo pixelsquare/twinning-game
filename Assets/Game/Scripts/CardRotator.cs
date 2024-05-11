@@ -52,6 +52,7 @@ namespace PxlSq.Game
         {
             if (_isRotating)
             {
+                _timer = 0f;
                 _isRotating = false;
                 OnRotationFinished?.Invoke();
             }
@@ -72,6 +73,7 @@ namespace PxlSq.Game
 
                 if  (_timer <= 0)
                 {
+                    _timer = 0f;
                     _isRotating = false;
                     OnRotationFinished?.Invoke();
                 }
