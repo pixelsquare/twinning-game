@@ -12,6 +12,9 @@ namespace PxlSq.Game
         GameOver
     }
 
+    /// <summary>
+    /// Manages all audio related logic.
+    /// </summary>
     public class AudioManager : MonoBehaviour
     {
         [SerializeField] private AudioConfig _audioConfig;
@@ -19,6 +22,11 @@ namespace PxlSq.Game
         private List<AudioSource> _audioSourcePool = new();
         private Dictionary<int, AudioClip> _sfxClipsMap = new();
 
+        /// <summary>
+        /// Plays and sfx based on sfxtype.
+        /// </summary>
+        /// <param name="sfxType">SfxType</param>
+        /// <exception cref="ArgumentNullException">Throws an exception when it cannot find the sfx type.</exception>
         public void PlaySfx(SfxType sfxType)
         {
             var audioSource = GetPooledAudioSource();
@@ -48,6 +56,11 @@ namespace PxlSq.Game
             }
         }
 
+        /// <summary>
+        /// Gets an audio source from a pool of audio sources.
+        /// Creates a new one if it cannot find one.
+        /// </summary>
+        /// <returns>Audio Source</returns>
         private AudioSource GetPooledAudioSource()
         {
             foreach (var audioSource in _audioSourcePool)
@@ -64,6 +77,9 @@ namespace PxlSq.Game
             return audioSrc;
         }
 
+        /// <summary>
+        /// Initializes sfx clip mapping.
+        /// </summary>
         private void Initialize()
         {
             _sfxClipsMap[(int)SfxType.CardFlip] = _audioConfig.CardFlipSfx;

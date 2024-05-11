@@ -1,5 +1,8 @@
 namespace PxlSq.Game
 {
+    /// <summary>
+    /// Game data
+    /// </summary>
     public class GameData 
     {
         public uint turns;

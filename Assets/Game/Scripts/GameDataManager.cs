@@ -2,6 +2,9 @@ using UnityEngine.Events;
 
 namespace PxlSq.Game
 {
+    /// <summary>
+    /// Handles game data changes and events
+    /// </summary>
     public class GameDataManager
     {
         private static readonly GameDataManager _instance = new();
@@ -68,11 +71,17 @@ namespace PxlSq.Game
             GameData = SaveManager.Instance.Load();
         }
 
+        /// <summary>
+        /// Saves the game data to storage
+        /// </summary>
         public void SaveGameData()
         {
             SaveManager.Instance.Save(_gameData);
         }
 
+        /// <summary>
+        /// Resets the game data except the high score
+        /// </summary>
         public void ResetGameData()
         {
             var highscore = _gameData.highscore;

@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace PxlSq.Game
 {
+    /// <summary>
+    /// Game configurations
+    /// </summary>
     [CreateAssetMenu(menuName = "PxlSq/Configs/GameConfig", fileName = "GameConfig")]
     public class GameConfig : ScriptableObject
     {

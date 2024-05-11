@@ -1,8 +1,10 @@
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace PxlSq.Game
 {
+    /// <summary>
+    /// Handles card matches
+    /// </summary>
     public class CardMatch
     {
         public UnityAction<bool> OnCardMatched;
@@ -27,6 +29,12 @@ namespace PxlSq.Game
             _card2.OnAnimationFinished -= OnAnimationFinished;
         }
 
+        /// <summary>
+        /// Initial setup for the card match
+        /// </summary>
+        /// <param name="card1"></param>
+        /// <param name="card2"></param>
+        /// <param name="isMatched"></param>
         public void Setup(Card card1, Card card2, bool isMatched)
         {
             _card1 = card1;
@@ -37,6 +45,10 @@ namespace PxlSq.Game
             _card2.OnAnimationFinished += OnAnimationFinished;
         }
 
+        /// <summary>
+        /// Handles the event for card animation
+        /// </summary>
+        /// <param name="card"></param>
         private void OnAnimationFinished(Card card)
         {
             if (!_card1.IsShown || !_card2.IsShown)

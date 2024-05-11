@@ -1,5 +1,8 @@
 namespace PxlSq.Game
 {
+    /// <summary>
+    /// Save data interface
+    /// </summary>
     public interface ISaveData<T>
     {
         T Data { get; set; }

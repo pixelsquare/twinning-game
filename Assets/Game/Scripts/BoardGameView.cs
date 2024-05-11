@@ -64,6 +64,11 @@ namespace PxlSq.Game
             StartCoroutine(UpdateBoardRoutine(gameData));
         }
 
+        /// <summary>
+        /// Gets the card logo and returns null if the index is out of bounds
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
         private Sprite GetCardLogo(int cardId)
         {
             if (cardId < 0 || cardId >= _cardLogos.Length)
@@ -74,6 +79,10 @@ namespace PxlSq.Game
             return _cardLogos[cardId];
         }
 
+        /// <summary>
+        /// Deactivates cards with negative index
+        /// </summary>
+        /// <param name="gameData"></param>
         private void DiscardInvalidCards(BoardGameData gameData)
         {
             foreach (var card in _cards)
@@ -92,11 +101,20 @@ namespace PxlSq.Game
             OnCardSelected?.Invoke(card);
         }
 
+        /// <summary>
+        /// Handles card animation finish event
+        /// </summary>
+        /// <param name="card"></param>
         private void HandleCardAnimFinished(Card card)
         {
             OnCardAnimFinished?.Invoke(card);
         }
 
+        /// <summary>
+        /// Updates the board and disables invalid cards after a frame
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
         private IEnumerator UpdateBoardRoutine(BoardGameData gameData)
         {
             yield return StartCoroutine(RemoveAllLayoutGroupsRoutine());

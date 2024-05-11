@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace PxlSq.Game
 {
+    /// <summary>
+    ///  Audio configurations
+    /// </summary>
     [CreateAssetMenu(menuName = "PxlSq/Configs/AudioConfig", fileName = "AudioConfig")]
     public class AudioConfig : ScriptableObject
     {

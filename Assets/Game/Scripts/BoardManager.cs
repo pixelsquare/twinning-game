@@ -4,7 +4,7 @@ using UnityEngine.Events;
 namespace PxlSq.Game
 {
     /// <summary>
-    /// Responsible for managing the game board.
+    /// Handles the game board
     /// </summary>
     public class BoardManager : MonoBehaviour
     {
@@ -30,6 +30,9 @@ namespace PxlSq.Game
             BoardGameView.OnCardAnimFinished -= HandleCardAnimFinished;
         }
 
+        /// <summary>
+        /// Initializes the board manager
+        /// </summary>
         private void Initialize()
         {
             if (!_gameManager.IsGameContinued)
@@ -47,21 +50,35 @@ namespace PxlSq.Game
             gameData.boardGameData = boardData;
         }
 
+        /// <summary>
+        /// Adds a turn count
+        /// </summary>
+        /// <param name="turn"></param>
         private void AddTurnCount(uint turn = 1)
         {
             GameDataManager.Instance.Turns += turn;
         }
 
+        /// <summary>
+        /// Adds a match count
+        /// </summary>
+        /// <param name="match"></param>
         private void AddMatchCount(uint match = 1)
         {
             GameDataManager.Instance.Matches += match;
         }
 
+        /// <summary>
+        /// Writes the game data to storage
+        /// </summary>
         private void SaveGameData()
         {
             GameDataManager.Instance.SaveGameData();
         }
 
+        /// <summary>
+        /// Resets the game data and changes the state if game won
+        /// </summary>
         private void CheckGameWon()
         {
             var didWin = GameDataManager.Instance.didWin;
@@ -73,12 +90,19 @@ namespace PxlSq.Game
             }
         }
 
+        /// <summary>
+        /// Resets the game board
+        /// </summary>
         private void ResetGameBoard()
         {
             var groupViewTransform = transform.GetChild(0);
             Destroy(groupViewTransform.gameObject);
         }
 
+        /// <summary>
+        /// Handles game state change event
+        /// </summary>
+        /// <param name="gameState"></param>
         private void HandleGameStateChanged(GameState gameState)
         {
             switch (gameState)
@@ -97,6 +121,10 @@ namespace PxlSq.Game
             }
         }
 
+        /// <summary>
+        /// Handles card match events
+        /// </summary>
+        /// <param name="didMatch"></param>
         private void HandleCardMatched(bool didMatch)
         {
             AddTurnCount();
@@ -116,6 +144,11 @@ namespace PxlSq.Game
             CheckGameWon();
         }
 
+        /// <summary>
+        /// Handles the card animation finish event
+        /// Plays an sfx on card flipped front facing
+        /// </summary>
+        /// <param name="card"></param>
         private void HandleCardAnimFinished(Card card)
         {
             if (card.IsShown)
