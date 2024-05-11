@@ -16,5 +16,5 @@ MonoBehaviour:
   _turnLimit: 0
   _comboMultiplier: 100
   _boardSize:
-    width: 2
-    height: 2
+    width: 6
+    height: 5
