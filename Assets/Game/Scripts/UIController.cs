@@ -11,24 +11,35 @@ namespace PxlSq.Game
         private void OnEnable()
         {
             _uiView.OnBackButtonClicked += HandleBackButtonClicked;
-            _boardManager.OnGameDataUpdated += HandleCardMatched;
+            GameDataManager.OnGameDataUpdated += HandleCardMatched;
         }
 
         private void OnDisable()
         {
             _uiView.OnBackButtonClicked -= HandleBackButtonClicked;
-            _boardManager.OnGameDataUpdated -= HandleCardMatched;
+            GameDataManager.OnGameDataUpdated -= HandleCardMatched;
+        }
+
+        private void Start()
+        {
+            RefreshUI();
         }
 
         private void HandleCardMatched(GameData gameData)
         {
             _uiView.UpdateTurnCount(gameData.turns);
             _uiView.UpdateMatchCount(gameData.matches);
+            _uiView.UpdateScoreCount(gameData.score);
         }
 
         private void HandleBackButtonClicked()
         {
             _audioManager.PlaySfx(SfxType.GameOver);
+        }
+
+        private void RefreshUI()
+        {
+            HandleCardMatched(GameDataManager.Instance.GameData);
         }
     }
 }

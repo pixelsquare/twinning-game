@@ -10,6 +10,7 @@ namespace PxlSq.Game
         [SerializeField] private Button _backButton;
         [SerializeField] private TMP_Text _turnCountText;
         [SerializeField] private TMP_Text _matchCountText;
+        [SerializeField] private TMP_Text _scoreCountText;
 
         public event UnityAction OnBackButtonClicked;
 
@@ -21,6 +22,11 @@ namespace PxlSq.Game
         public void UpdateMatchCount(uint matchCount)
         {
             _matchCountText.text = $"Matches: {matchCount}";
+        }
+
+        public void UpdateScoreCount(uint scoreCount)
+        {
+            _scoreCountText.text = $"Score: {scoreCount}";
         }
 
         private void OnEnable()

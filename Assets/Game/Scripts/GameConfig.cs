@@ -16,10 +16,14 @@ namespace PxlSq.Game
             }
         }
 
+        [SerializeField] private uint _scorePoint;
         [SerializeField] private uint _turnLimit;
+        [SerializeField] private uint _comboMultiplier = 100;
         [SerializeField] private BoardSize _boardSize = new(2, 2);
 
+        public uint ScorePoint => _scorePoint;
         public uint TurnLimit => _turnLimit;
+        public float ComboMultiplier => _comboMultiplier / 100f;
         public BoardSize BoardSize => _boardSize;
 
 #if UNITY_EDITOR

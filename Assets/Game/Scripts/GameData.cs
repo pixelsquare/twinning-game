@@ -4,6 +4,7 @@ namespace PxlSq.Game
     {
         public uint turns;
         public uint matches;
+        public uint score;
         public BoardGameData boardGameData;
     }
 }
