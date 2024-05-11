@@ -1,4 +1,4 @@
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace PxlSq.Game
@@ -13,26 +13,43 @@ namespace PxlSq.Game
             set => PlayerPrefs.SetString(PlayerPrefsKey, value);
         }
 
+        private bool _isDebugMode;
+
         private const string PlayerPrefsKey = "localsavedata";
+
+        public LocalSaveData(bool isDebugMode = false)
+        {
+            _isDebugMode = isDebugMode;
+        }
 
         public void Save(T data)
         {
             Data = data;
             var content = JsonConvert.SerializeObject(data);
             StringData = content;
-            // Debug.Log($"{nameof(LocalSaveData<T>)} : Saving game data.\n{content}");
+            PrintLog($"Saving game data.\n{content}");
         }
 
         public T Load()
         {
             Data = JsonConvert.DeserializeObject<T>(StringData) ?? new();
-            // Debug.Log($"{nameof(LocalSaveData<T>)} : Loading game data.\n{StringData}");
+            PrintLog($"Loading game data.\n{StringData}");
             return Data;
         }
 
         public void Delete()
         {
             PlayerPrefs.DeleteKey(PlayerPrefsKey);
+        }
+
+        private void PrintLog(string message)
+        {
+            if (!_isDebugMode)
+            {
+                return;
+            }
+
+            Debug.Log($"{nameof(LocalSaveData<T>)} : {message}");
         }
     }
 }

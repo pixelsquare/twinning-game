@@ -8,7 +8,9 @@ namespace PxlSq.Game
         public BoardSize boardSize;
         public int[] cardIds;
 
-        public BoardGameData() { }
+        public BoardGameData()
+        {
+        }
 
         public BoardGameData(BoardSize boardSize)
         {
