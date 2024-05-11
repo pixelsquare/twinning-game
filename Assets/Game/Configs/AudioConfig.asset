@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a277c2bc721324818ac4789435577e3e, type: 3}
+  m_Name: AudioConfig
+  m_EditorClassIdentifier: 
+  _volume: 100
+  _cardFlipSfx: {fileID: 8300000, guid: 3fa2cb35f46764f0eb9be07d5f724f2f, type: 3}
+  _cardMatchSfx: {fileID: 8300000, guid: febc9e2837cd145ebbe37e5aeab7a46a, type: 3}
+  _cardMisMatchSfx: {fileID: 8300000, guid: 215b79711d4324d32969450d46c5e8c5, type: 3}
+  _gameOverSfx: {fileID: 8300000, guid: 9cc90ce669f4e4a67acd6d26d92b521b, type: 3}
