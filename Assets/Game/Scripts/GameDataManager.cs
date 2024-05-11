@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace PxlSq.Game
@@ -8,7 +7,15 @@ namespace PxlSq.Game
         private static readonly GameDataManager _instance = new();
         public static GameDataManager Instance => _instance;
 
-        public GameData GameData => _gameData;
+        public GameData GameData
+        {
+            get => _gameData;
+            set
+            {
+                _gameData = value;
+                OnGameDataUpdated?.Invoke(value);
+            }
+        }
 
         public uint Turns
         {
@@ -36,7 +43,19 @@ namespace PxlSq.Game
             set
             {
                 _gameData.score = value;
+                _gameData.highscore = System.Math.Max(_gameData.highscore, value);
                 OnGameDataUpdated?.Invoke(_gameData);
+            }
+        }
+
+        public bool HasExistingGameData => _gameData?.boardGameData != null;
+
+        public bool didWin
+        {
+            get
+            {
+                var totalMatches = Matches * 2;
+                return totalMatches == _gameData.boardGameData.boardSize.TotalCount;
             }
         }
 
@@ -46,12 +65,25 @@ namespace PxlSq.Game
 
         public GameDataManager()
         {
-            _gameData = SaveManager.Instance.Load();
+            GameData = SaveManager.Instance.Load();
         }
 
         public void SaveGameData()
         {
             SaveManager.Instance.Save(_gameData);
+        }
+
+        public void ResetGameData()
+        {
+            var highscore = _gameData.highscore;
+
+            GameData = new GameData
+            {
+                highscore = highscore
+            };
+
+            OnGameDataUpdated?.Invoke(_gameData);
+            SaveGameData();
         }
     }
 }

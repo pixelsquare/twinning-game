@@ -9,5 +9,7 @@ namespace PxlSq.Game
         T Load();
 
         void Delete();
+
+        bool HasSaveData();
     }
 }

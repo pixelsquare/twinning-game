@@ -28,5 +28,10 @@ namespace PxlSq.Game
         {
             _localSaveData.Delete();
         }
+
+        public bool HasSaveData()
+        {
+            return _localSaveData.HasSaveData();
+        }
     }
 }

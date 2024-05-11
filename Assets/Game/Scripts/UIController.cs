@@ -5,24 +5,37 @@ namespace PxlSq.Game
     public class UIController : MonoBehaviour
     {
         [SerializeField] private BoardManager _boardManager;
-        [SerializeField] private AudioManager _audioManager;
         [SerializeField] private UIView _uiView;
+
+        public void SetMainPanelActive(bool active)
+        {
+            UpdateMainUI();
+            _uiView.SetMenuPanelActive(active);
+            _uiView.SetGamePanelActive(!active);
+        }
+
+        public void SetGamePanelActive(bool active)
+        {
+            UpdateGameUI();
+            _uiView.SetGamePanelActive(active);
+            _uiView.SetMenuPanelActive(!active);
+        }
 
         private void OnEnable()
         {
-            _uiView.OnBackButtonClicked += HandleBackButtonClicked;
             GameDataManager.OnGameDataUpdated += HandleCardMatched;
+            GameManager.OnGameStateChanged += HandleGameStateChanged;
         }
 
         private void OnDisable()
         {
-            _uiView.OnBackButtonClicked -= HandleBackButtonClicked;
             GameDataManager.OnGameDataUpdated -= HandleCardMatched;
+            GameManager.OnGameStateChanged -= HandleGameStateChanged;
         }
 
         private void Start()
         {
-            RefreshUI();
+            UpdateMainUI();
         }
 
         private void HandleCardMatched(GameData gameData)
@@ -32,12 +45,19 @@ namespace PxlSq.Game
             _uiView.UpdateScoreCount(gameData.score);
         }
 
-        private void HandleBackButtonClicked()
+        private void HandleGameStateChanged(GameState gameState)
         {
-            _audioManager.PlaySfx(SfxType.GameOver);
+            SetMainPanelActive(gameState == GameState.Menu);
+            SetGamePanelActive(gameState == GameState.Game);
         }
 
-        private void RefreshUI()
+        private void UpdateMainUI()
+        {
+            _uiView.UpdateHighScore(SaveManager.Instance.GameData.highscore);
+            _uiView.SetContinueButtonActive(GameDataManager.Instance.HasExistingGameData);
+        }
+
+        private void UpdateGameUI()
         {
             HandleCardMatched(GameDataManager.Instance.GameData);
         }

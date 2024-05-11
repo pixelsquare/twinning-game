@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -13,12 +14,14 @@ namespace PxlSq.Game
     {
         [SerializeField] private Card _cardPrefab;
         [SerializeField] private GameObject _cardListViewPrefab;
-        [SerializeField] private Transform _cardGroupViewTransform;
+        [SerializeField] private Transform _cardGroupViewPrefab;
         [SerializeField] private Sprite[] _cardLogos;
 
         public static event UnityAction<Card> OnCardSelected = null;
         public static event UnityAction<Card> OnCardAnimFinished = null;
 
+        private List<Card> _cards = new List<Card>();
+        private Transform _cardGroupViewTransform;
 
         /// <summary>
         /// Populates the game board.
@@ -35,6 +38,9 @@ namespace PxlSq.Game
                 throw new ArgumentException("Invalid argument! Card count must be even.", nameof(boardSize));
             }
 
+            _cards.Clear();
+            _cardGroupViewTransform = Instantiate(_cardGroupViewPrefab, transform);
+
             var idx = 0;
 
             for (var y = 0; y < boardSize.height; y++)
@@ -45,19 +51,36 @@ namespace PxlSq.Game
                 {
                     var btnIdx = idx;
                     var cardId = gameData.cardIds[btnIdx];
-                    var cardLogo = cardId < _cardLogos.Length ? _cardLogos[cardId] : null;
+                    var cardLogo = GetCardLogo(cardId);
                     var card = Instantiate(_cardPrefab, cardListView.transform);
                     card.Initialize(btnIdx, cardLogo, HandleCardClicked);
                     card.OnAnimationFinished += HandleCardAnimFinished;
+                    card.name = $"Card_{btnIdx}";
+                    _cards.Add(card);
                     idx++;
                 }
             }
+
+            StartCoroutine(UpdateBoardRoutine(gameData));
         }
 
-        private IEnumerator Start()
+        private Sprite GetCardLogo(int cardId)
         {
-            yield return null;
-            RemoveAllLayoutGroupsRoutine();
+            if (cardId < 0 || cardId >= _cardLogos.Length)
+            {
+                return null;
+            }
+
+            return _cardLogos[cardId];
+        }
+
+        private void DiscardInvalidCards(BoardGameData gameData)
+        {
+            foreach (var card in _cards)
+            {
+                var cardId = gameData.cardIds[card.Index];
+                card.gameObject.SetActive(cardId >= 0);
+            }
         }
 
         /// <summary>
@@ -74,14 +97,21 @@ namespace PxlSq.Game
             OnCardAnimFinished?.Invoke(card);
         }
 
+        private IEnumerator UpdateBoardRoutine(BoardGameData gameData)
+        {
+            yield return StartCoroutine(RemoveAllLayoutGroupsRoutine());
+            DiscardInvalidCards(gameData);
+        }
+
         /// <summary>
         /// Removes all layout groups after a frame.
         /// Ensures that the UI elements has been properly positioned
         /// And prevents the canvas runtime layout calculation.
         /// </summary>
         /// <returns></returns>
-        private void RemoveAllLayoutGroupsRoutine()
+        private IEnumerator RemoveAllLayoutGroupsRoutine()
         {
+            yield return null;
             var layoutGroups = transform.GetComponentsInChildren<LayoutGroup>();
             
             foreach (var layoutGroup in layoutGroups)

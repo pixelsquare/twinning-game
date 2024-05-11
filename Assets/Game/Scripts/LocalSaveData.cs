@@ -42,6 +42,11 @@ namespace PxlSq.Game
             PlayerPrefs.DeleteKey(PlayerPrefsKey);
         }
 
+        public bool HasSaveData()
+        {
+            return PlayerPrefs.HasKey(PlayerPrefsKey);
+        }
+
         private void PrintLog(string message)
         {
             if (!_isDebugMode)

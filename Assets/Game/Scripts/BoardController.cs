@@ -8,32 +8,39 @@ namespace PxlSq.Game
     /// </summary>
     public class BoardController
     {
-        [SerializeField] private BoardGameData _gameData;
-        [SerializeField] private BoardGameView _gameView;
+        [SerializeField] private BoardGameData _boardData;
+        [SerializeField] private BoardGameView _boardView;
 
         public static event UnityAction<bool> OnCardMatched = null;
 
         private Card _selectedCard = null;
+        private CardMatch _cardMatch = new(OnCardMatched);
         private readonly System.Random _rng = new System.Random();
 
         public BoardController(BoardGameData gameData, BoardGameView gameView)
         {
-            _gameData = gameData;
-            _gameView = gameView;
+            _boardData = gameData;
+            _boardView = gameView;
 
-            // Generate new card ids if we don't have anything saved.
-            if (gameData.cardIds == null || gameData.cardIds.Length == 0)
-            {
-                GenerateCardIds(_gameData.boardSize);
-            }
-
-            _gameView.PopulateGameBoard(_gameData);
             BoardGameView.OnCardSelected += HandleCardSelected;
         }
 
         ~BoardController()
         {
             BoardGameView.OnCardSelected -= HandleCardSelected;
+        }
+
+        public void Initialize(BoardGameData gameData)
+        {
+            _boardData = gameData;
+
+            // Generate new card ids if we don't have anything saved.
+            if (_boardData.cardIds == null || _boardData.cardIds.Length == 0)
+            {
+                GenerateCardIds(_boardData.boardSize);
+            }
+
+            _boardView.PopulateGameBoard(_boardData);
         }
 
         /// <summary>
@@ -43,16 +50,16 @@ namespace PxlSq.Game
         public void GenerateCardIds(BoardSize boardSize)
         {
             var cardCount = boardSize.TotalCount;
-            _gameData.cardIds = new int[cardCount];
+            _boardData.cardIds = new int[cardCount];
 
             for (var i = 0; i < cardCount; i++)
             {
                 var idx = i % (int)(cardCount / 2);
-                _gameData.cardIds[i] = idx;
+                _boardData.cardIds[i] = idx;
             }
 
-            ShuffleCards(_gameData.cardIds);
-            // PrintCardIds(_gameData.cardIds);
+            ShuffleCards(_boardData.cardIds);
+            // PrintCardIds(_boardData.cardIds);
         }
 
         /// <summary>
@@ -86,13 +93,14 @@ namespace PxlSq.Game
 
             // Card match is already determined before animation finishes.
             var isMatched = IsCardMatched(_selectedCard, card);
-            _ = new CardMatch(_selectedCard, card, isMatched)
-            {
-                OnCardMatched = OnCardMatched
-            };
+            _cardMatch.Setup(_selectedCard, card, isMatched);
 
-            _selectedCard = null;
+            if (isMatched)
+            {
+                DiscardCardIds(_selectedCard, card);
+            }
             
+            _selectedCard = null;
         }
 
         /// <summary>
@@ -102,7 +110,7 @@ namespace PxlSq.Game
         /// <returns>Card Id</returns>
         private int GetCardId(int cardIndex)
         {
-            return _gameData.cardIds[cardIndex];
+            return _boardData.cardIds[cardIndex];
         }
 
         /// <summary>
@@ -114,6 +122,14 @@ namespace PxlSq.Game
         private bool IsCardMatched(Card card1, Card card2)
         {
             return GetCardId(card1.Index) == GetCardId(card2.Index);
+        }
+
+        private void DiscardCardIds(params Card[] cards)
+        {
+            foreach (var card in cards)
+            {
+                _boardData.cardIds[card.Index] = -1;
+            }
         }
 
         /// <summary>

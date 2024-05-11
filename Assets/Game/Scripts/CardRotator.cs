@@ -50,6 +50,12 @@ namespace PxlSq.Game
         /// <param name="targetRotation">Target rotation in euler angle</param>
         private void StartRotating(float duration, Vector3 targetRotation)
         {
+            if (_isRotating)
+            {
+                _isRotating = false;
+                OnRotationFinished?.Invoke();
+            }
+
             _isRotating = true;
             _timer = duration;
             _duration = duration;
