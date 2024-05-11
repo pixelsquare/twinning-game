@@ -11,7 +11,7 @@ namespace PxlSq.Game
         [SerializeField] private BoardGameData _gameData;
         [SerializeField] private BoardGameView _gameView;
 
-        public event UnityAction<bool> OnCardMatched = null;
+        public static event UnityAction<bool> OnCardMatched = null;
 
         private Card _selectedCard = null;
         private readonly System.Random _rng = new System.Random();
@@ -28,12 +28,12 @@ namespace PxlSq.Game
             }
 
             _gameView.PopulateGameBoard(_gameData);
-            _gameView.OnCardSelected += HandleCardSelected;
+            BoardGameView.OnCardSelected += HandleCardSelected;
         }
 
         ~BoardController()
         {
-            _gameView.OnCardSelected -= HandleCardSelected;
+            BoardGameView.OnCardSelected -= HandleCardSelected;
         }
 
         /// <summary>

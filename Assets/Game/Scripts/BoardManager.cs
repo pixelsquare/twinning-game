@@ -11,30 +11,27 @@ namespace PxlSq.Game
         [SerializeField] private BoardGameView _boardGameView;
         [SerializeField] private AudioManager _audioManager;
 
-        public event UnityAction<GameData> OnGameDataUpdated;
-
-        private BoardController _boardController;
-        private GameData _gameData;
+        public static event UnityAction<bool> OnCardMatched;
 
         private void Awake()
         {
-            _gameData = SaveManager.Instance.Load();
+            var gameData = GameDataManager.Instance.GameData;
             var boardSize = GameConfig.Instance.BoardSize;
-            var boardData = _gameData.boardGameData ?? new BoardGameData(boardSize);
-            _boardController = new BoardController(boardData, _boardGameView);
-            _gameData.boardGameData = boardData;
+            var boardData = gameData?.boardGameData ?? new BoardGameData(boardSize);
+            _ = new BoardController(boardData, _boardGameView);
+            gameData.boardGameData = boardData;
         }
 
         private void OnEnable()
         {
-            _boardController.OnCardMatched += HandleCardMatched;
-            _boardGameView.OnCardAnimFinished += HandleCardAnimFinished;
+            BoardController.OnCardMatched += HandleCardMatched;
+            BoardGameView.OnCardAnimFinished += HandleCardAnimFinished;
         }
 
         private void OnDisable()
         {
-            _boardController.OnCardMatched -= HandleCardMatched;
-            _boardGameView.OnCardAnimFinished -= HandleCardAnimFinished;
+            BoardController.OnCardMatched -= HandleCardMatched;
+            BoardGameView.OnCardAnimFinished -= HandleCardAnimFinished;
         }
 
         private void Start()
@@ -44,18 +41,17 @@ namespace PxlSq.Game
 
         private void AddTurnCount(uint turn = 1)
         {
-            _gameData.turns += turn;
+            GameDataManager.Instance.Turns += turn;
         }
 
         private void AddMatchCount(uint match = 1)
         {
-            _gameData.matches += match;
+            GameDataManager.Instance.Matches += match;
         }
 
         private void SaveGameData()
         {
-            SaveManager.Instance.Save(_gameData);
-            OnGameDataUpdated?.Invoke(_gameData);
+            GameDataManager.Instance.SaveGameData();
         }
 
         private void HandleCardMatched(bool didMatch)
@@ -73,6 +69,7 @@ namespace PxlSq.Game
             }
 
             SaveGameData();
+            OnCardMatched?.Invoke(didMatch);
         }
 
         private void HandleCardAnimFinished(Card card)

@@ -16,8 +16,8 @@ namespace PxlSq.Game
         [SerializeField] private Transform _cardGroupViewTransform;
         [SerializeField] private Sprite[] _cardLogos;
 
-        public event UnityAction<Card> OnCardSelected = null;
-        public event UnityAction<Card> OnCardAnimFinished = null;
+        public static event UnityAction<Card> OnCardSelected = null;
+        public static event UnityAction<Card> OnCardAnimFinished = null;
 
 
         /// <summary>
