@@ -22,8 +22,9 @@ namespace PxlSq.Game
         private int _index;
         private bool _isShown;
 
-        public void Initialize(int index, Sprite logoSprite)
+        public void Initialize(int index, Sprite logoSprite, UnityAction<Card> onCardClicked = null)
         {
+            OnCardClicked = onCardClicked;
             SetIndex(index);
             SetLogo(logoSprite);
         }

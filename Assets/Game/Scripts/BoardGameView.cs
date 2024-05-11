@@ -17,6 +17,8 @@ namespace PxlSq.Game
         [SerializeField] private Sprite[] _cardLogos;
 
         public event UnityAction<Card> OnCardSelected = null;
+        public event UnityAction<Card> OnCardAnimFinished = null;
+
 
         /// <summary>
         /// Populates the game board.
@@ -45,8 +47,8 @@ namespace PxlSq.Game
                     var cardId = gameData.cardIds[btnIdx];
                     var cardLogo = cardId < _cardLogos.Length ? _cardLogos[cardId] : null;
                     var card = Instantiate(_cardPrefab, cardListView.transform);
-                    card.OnCardClicked = HandleCardClicked;
-                    card.Initialize(btnIdx, cardLogo);
+                    card.Initialize(btnIdx, cardLogo, HandleCardClicked);
+                    card.OnAnimationFinished += HandleCardAnimFinished;
                     idx++;
                 }
             }
@@ -64,7 +66,12 @@ namespace PxlSq.Game
         /// <param name="card"></param>
         private void HandleCardClicked(Card card)
         {
-            OnCardSelected.Invoke(card);
+            OnCardSelected?.Invoke(card);
+        }
+
+        private void HandleCardAnimFinished(Card card)
+        {
+            OnCardAnimFinished?.Invoke(card);
         }
 
         /// <summary>

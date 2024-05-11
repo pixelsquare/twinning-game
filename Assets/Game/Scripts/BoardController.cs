@@ -28,7 +28,6 @@ namespace PxlSq.Game
             }
 
             _gameView.PopulateGameBoard(_gameData);
-
             _gameView.OnCardSelected += HandleCardSelected;
         }
 

@@ -8,8 +8,8 @@ namespace PxlSq.Game
     /// </summary>
     public class BoardManager : MonoBehaviour
     {
-        [SerializeField] private BoardSize _boardSize = new (2, 1);
         [SerializeField] private BoardGameView _boardGameView;
+        [SerializeField] private AudioManager _audioManager;
 
         public event UnityAction<GameData> OnGameDataUpdated;
 
@@ -19,7 +19,8 @@ namespace PxlSq.Game
         private void Awake()
         {
             _gameData = SaveManager.Instance.Load();
-            var boardData = _gameData.boardGameData ?? new BoardGameData(_boardSize);
+            var boardSize = GameConfig.Instance.BoardSize;
+            var boardData = _gameData.boardGameData ?? new BoardGameData(boardSize);
             _boardController = new BoardController(boardData, _boardGameView);
             _gameData.boardGameData = boardData;
         }
@@ -27,11 +28,13 @@ namespace PxlSq.Game
         private void OnEnable()
         {
             _boardController.OnCardMatched += HandleCardMatched;
+            _boardGameView.OnCardAnimFinished += HandleCardAnimFinished;
         }
 
         private void OnDisable()
         {
             _boardController.OnCardMatched -= HandleCardMatched;
+            _boardGameView.OnCardAnimFinished -= HandleCardAnimFinished;
         }
 
         private void Start()
@@ -62,9 +65,22 @@ namespace PxlSq.Game
             if (didMatch)
             {
                 AddMatchCount();
+                _audioManager.PlaySfx(SfxType.CardMatch);
+            }
+            else
+            {
+                _audioManager.PlaySfx(SfxType.CardMisMatchSfx);
             }
 
             SaveGameData();
+        }
+
+        private void HandleCardAnimFinished(Card card)
+        {
+            if (card.IsShown)
+            {
+                _audioManager.PlaySfx(SfxType.CardFlip);
+            }
         }
     }
 }
